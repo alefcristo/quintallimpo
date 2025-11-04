@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Google Tag Manager / Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CN2VMLXXK3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-CN2VMLXXK3');
+  </script>
+  
+  <!-- Meta Pixel (Facebook Pixel) -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '740025223113117');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=740025223113117&ev=PageView&noscript=1"
+  /></noscript>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quintal Limpo | Orçamento Dinâmico</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #374151;
+      /* ALTERAÇÃO: Fundo verde-claro (#E8F4EC) */
+      background-color: #E8F4EC; 
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .slide-up {
+      animation: slideUp 0.4s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .service-card {
+      transition: all 0.3s ease-in-out;
+      /* Ajuste para garantir que o badge não seja cortado */
+      overflow: visible; 
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .service-card.active {
+      border: 3px solid #16a34a;
+      background-color: #f0fdf4;
+    }
+    .modal-backdrop {
+      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 3px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    /* Estilos adicionais */
+    .slide-in {
+      animation: slideIn 0.4s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .calendar-input {
+      cursor: pointer;
+    }
+    .calendar-input::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .budget-summary {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 2px solid #16a34a;
+    }
+    
+    /* ---------------------------------------------------- */
+    /* ALTERAÇÃO SOLICITADA: Layout de serviços para mobile */
+    /* ---------------------------------------------------- */
+    .mobile-scroll-container {
+      display: flex;
+      gap: 1.5rem; /* gap-6 */
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 1rem; /* Espaço para sombra/scroll */
+      -webkit-overflow-scrolling: touch;
+      margin-left: -1rem; /* Ajusta para iniciar na borda do padding do container principal */
+      margin-right: -1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .mobile-scroll-container > div {
+      scroll-snap-align: start;
+      /* Mostra 1 cartão inteiro e uma prévia do próximo */
+      width: 85%; 
+      flex-shrink: 0;
+    }
+    
+    /* Novo estilo para o badge "FAVORITO" */
+    .service-badge {
+        position: absolute;
+        top: 0.75rem; /* top-3 */
+        right: 0.75rem; /* right-3 */
+        z-index: 10;
+        background-color: #f97316; /* orange-600 */
+        color: white;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem; /* py-1 px-3 */
+        border-radius: 9999px; /* rounded-lg */
+        font-size: 0.75rem; /* text-xs */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (min-width: 768px) { /* md: */
+      .mobile-scroll-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        overflow-x: hidden;
+        scroll-snap-type: none;
+        padding-bottom: 0;
+        margin-left: auto; /* Centraliza no desktop */
+        margin-right: auto;
+        padding-left: 0;
+        padding-right: 0;
+        max-width: 80rem; /* max-w-5xl da section */
+      }
+      .mobile-scroll-container > div {
+        width: 100%;
+      }
+      .service-badge {
+          top: 1rem; /* Mantém a posição visualmente agradável no desktop */
+          right: 1rem;
+      }
+    }
+    /* ---------------------------------------------------- */
+    /* FIM DA ALTERAÇÃO DO LAYOUT */
+    /* ---------------------------------------------------- */
+    
+    /* ---------------------------------------------------- */
+    /* ESTILOS PARA CHIPS SELECIONÁVEIS */
+    /* ---------------------------------------------------- */
+    .chip-selectable input:checked + span {
+      /* Não aplicamos estilos diretamente aqui, usamos JavaScript */
+    }
+    
+    .chip-active {
+      background-color: #16a34a !important; /* bg-green-600 */
+      color: white !important;
+      border-color: #16a34a !important;
+    }
+    /* ---------------------------------------------------- */
+    
+    /* ================================================== */
+    /* MELHORIAS UX MOBILE - EXPERIÊNCIA DE APP */
+    /* ================================================== */
+    
+    /* Bottom Navigation - Navegação Inferior Fixa */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0;
+      padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+    }
+    
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      min-width: 60px;
+      text-decoration: none;
+      color: #6b7280;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .bottom-nav-item.active {
+      color: #16a34a;
+    }
+    
+    .bottom-nav-item svg {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 0.25rem;
+    }
+    
+    .bottom-nav-item span {
+      font-size: 0.625rem;
+      font-weight: 500;
+    }
+    
+    /* Ripple Effect para Botões */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .ripple:active::after {
+      width: 300px;
+      height: 300px;
+    }
+    
+    /* Touch Feedback */
+    .touch-feedback {
+      -webkit-tap-highlight-color: rgba(22, 163, 74, 0.1);
+      tap-highlight-color: rgba(22, 163, 74, 0.1);
+    }
+    
+    .touch-feedback:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    
+    /* Otimização de Performance - Hardware Acceleration */
+    .hw-accelerate {
+      transform: translateZ(0);
+      will-change: transform;
+    }
+    
+    /* Smooth Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+    
+    /* Cards com Melhor Hierarquia Visual Mobile */
+    @media (max-width: 767px) {
+      .service-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      
+      .service-card:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+    
+    /* Header Compacto Mobile */
+    @media (max-width: 767px) {
+      header {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+      }
+      
+      header img {
+        height: 2.5rem !important;
+      }
+      
+      header .text-xl {
+        font-size: 1.125rem !important;
+      }
+    }
+    
+    /* Padding Bottom para Bottom Nav */
+    @media (max-width: 767px) {
+      body {
+        padding-bottom: 70px;
+      }
+      
+      .bottom-nav {
+        display: flex;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .bottom-nav {
+        display: none;
+      }
+      
+      body {
+        padding-bottom: 0;
+      }
+    }
+    
+    /* Notificações Rotativas */
+    #notification-float {
+      animation: slideInRight 0.5s ease-out;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .animate-slide-in {
+      animation: slideInRight 0.5s ease-out;
+    }
+    
+    @media (max-width: 767px) {
+      #notification-float {
+        bottom: 80px !important;
+        right: 0.5rem !important;
+        max-width: calc(100vw - 2rem);
+      }
+    }
+    
+    /* Animação de Entrada Suave */
+    .fade-in-up {
+      animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Otimização de Toque - Áreas Maiores */
+    @media (max-width: 767px) {
+      button, a.inline-block, .service-card a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    
+    /* Progress Indicator para Orçamento */
+    .progress-bar {
+      height: 4px;
+      background: #e5e7eb;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
+      transition: width 0.3s ease;
+    }
+    
+    /* Modal Otimizado Mobile */
+    @media (max-width: 767px) {
+      .modal-backdrop > div {
+        max-height: 85vh !important;
+        margin: 1rem !important;
+      }
+    }
+    
+    /* Scroll Suave */
+    html {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* ================================================== */
+    /* FIM DAS MELHORIAS UX MOBILE */
+    /* ================================================== */
+  </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar">
+  <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+</div>
+
+ <!-- Header com Logo e Menu Completo -->
+<header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-md z-50">
+    <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+        <!-- Logo e Nome -->
+        <a href="#home" class="flex items-center space-x-3">
+            <img src="https://i.imgur.com/T9uPEptl.jpg" alt="Logo Quintal Limpo" class="h-12 rounded-full object-contain">
+            <span class="text-xl sm:text-2xl font-bold text-green-600">Quintal Limpo</span>
+        </a>
+        
+        <!-- Menu Central (Desktop) -->
+        <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <a href="#home" class="text-gray-700 hover:text-green-600 transition-colors">Home</a>
+            <a href="#servicos" class="text-gray-700 hover:text-green-600 transition-colors">Serviços</a>
+            <a href="#clube-quintal" class="text-gray-700 hover:text-green-600 transition-colors">Clube Quintal</a>
+            <a href="#sobre-nos" class="text-gray-700 hover:text-green-600 transition-colors">Sobre Nós</a>
+            <a href="#faq" class="text-gray-700 hover:text-green-600 transition-colors">FAQ</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1F5jLpscZDPlL_R3HCb0XG-5TBGh7aTK79fUr0RfgMJajbg/viewform" target="_blank" rel="noopener" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">✅ Seja um Parceiro</a>
+        </nav>
+        
+        <!-- Botão Menu Mobile -->
+        <button id="mobile-menu-btn" class="md:hidden text-gray-700 hover:text-green-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Menu Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+        <nav class="flex flex-col space-y-2 px-4 py-4 text-sm font-medium">
+            <a href="#home" class="text-gray-700 hover:text-green-600 transition-colors py-2">Home</a>
+            <a href="#servicos" class="text-gray-700 hover:text-green-600 transition-colors py-2">Serviços</a>
+            <a href="#clube-quintal" class="text-gray-700 hover:text-green-600 transition-colors py-2">Clube Quintal</a>
+            <a href="#sobre-nos" class="text-gray-700 hover:text-green-600 transition-colors py-2">Sobre Nós</a>
+            <a href="#faq" class="text-gray-700 hover:text-green-600 transition-colors py-2">FAQ</a>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1F5jLpscZDPlL_R3HCb0XG-5TBGh7aTK79fUr0RfgMJajbg/viewform" target="_blank" rel="noopener" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-center">✅ Seja um Parceiro</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Seção Home -->
+<section id="home" class="pt-24 pb-12 sm:pt-28 sm:pb-16 bg-gray-50">
+<!-- Caixa branca com padding e layout harmônico -->
+<div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl mx-auto text-center">
+
+  <!-- Título -->
+  <h2 class="text-2xl sm:text-2xl md:text-3xl font-bold mb-2 text-gray-900 leading-snug">
+    Espaços Mais Limpos,
+    <br> Vidas Mais Tranquilas.
+</h2>
+  <!-- Resumo -->
+  <p class="text-sm sm:text-lg text-gray-700 mb-6 max-w-2xl mx-auto leading-relaxed">
+    <br> Aqui, você agenda sua limpeza e recebe o profissional certo pra cada serviço.
+</p>
+
+  <!-- Botões lado a lado -->
+  <div class="flex sm:flex-row flex-col justify-center gap-4 sm:gap-6 w-full">
+    <a href="#servicos" 
+       class="bg-green-700 hover:bg-green-800 text-white font-semibold text-sm sm:text-base px-6 py-3 rounded-lg flex-1 sm:flex-none text-center transition-transform transform hover:scale-105 ripple touch-feedback hw-accelerate">
+       Calcular valor da limpeza
+    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1F5jLpscZDPlL_R3HCb0XG-5TBGh7aTK79fUr0RfgMJajbg/viewform" 
+       target="_blank" rel="noopener" 
+       class="bg-white border-2 border-green-700 text-green-700 font-semibold text-sm sm:text-base px-6 py-3 rounded-lg flex-1 sm:flex-none text-center hover:bg-green-50 transition-transform transform hover:scale-105 ripple touch-feedback hw-accelerate">
+       Ser um Profissional Parceiro(a)
+    </a>
+  </div>
+</div>
+
+      </section>
+     <section id="servicos" class="py-12 sm:py-16 bg-green-50">
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12 text-gray-800">Nossos Serviços</h2>
+
+    <div class="mobile-scroll-container max-w-5xl mx-auto md:px-0">
+        <!-- Cartões de serviços ajustados para estarem mais compactos e visíveis -->
+        <div class="service-card bg-white p-6 shadow-lg rounded-2xl text-center border-2 border-transparent transition-all hover:shadow-xl cursor-pointer relative hw-accelerate fade-in-up" onclick="selectService('faxina')">
+            <div class="service-badge">
+                FAVORITO
+            </div>
+            <img src="https://i.imgur.com/cHBBIEEl.jpg" class="rounded-xl mb-4 h-48 sm:h-64 w-full object-cover object-center" alt="Faxina Residencial" loading="lazy">
+            <h4 class="font-semibold text-xl mb-2 text-gray-800">Faxina Residencial</h4>
+            <p class="text-sm text-gray-600 mb-4">Sua casa limpa com mais praticidade.</p>
+            <a href="#orcamento" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors w-full ripple touch-feedback" onclick="gtag('event', 'click', {event_category: 'Intencao_Compra', event_label: 'Fazer_Orcamento_Faxina'}); fbq('track', 'AddToCart', {content_name: 'Faxina Residencial'}); selectService('faxina')">
+                Fazer meu orçamento
+            </a>
+          </div>
+
+          <div class="service-card bg-white p-6 shadow-lg rounded-2xl text-center border-2 border-transparent transition-all hover:shadow-xl cursor-pointer relative hw-accelerate fade-in-up" onclick="selectService('terreno')">
+            <img src="https://i.imgur.com/qOq7q1Zl.jpg" class="rounded-xl mb-4 h-48 sm:h-64 w-full object-cover object-center" alt="Limpeza de Terreno" loading="lazy">
+            <h4 class="font-semibold text-xl mb-2 text-gray-800">Limpeza de Terreno</h4>
+            <p class="text-sm text-gray-600 mb-4">Do mato alto ao quintal limpo.</p>
+            <a href="#orcamento" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors w-full ripple touch-feedback" onclick="gtag('event', 'click', {event_category: 'Intencao_Compra', event_label: 'Fazer_Orcamento_Terreno'}); fbq('track', 'AddToCart', {content_name: 'Limpeza de Terreno'}); selectService('terreno')">
+              Fazer meu orçamento
+            </a>
+          </div>
+
+          <div class="service-card bg-white p-6 shadow-lg rounded-2xl text-center border-2 border-transparent transition-all hover:shadow-xl cursor-pointer relative hw-accelerate fade-in-up" onclick="selectService('piscina')">
+            <img src="https://i.imgur.com/RXcz8JFl.jpg" class="rounded-xl mb-4 h-48 sm:h-64 w-full object-cover object-center" alt="Limpeza de Piscina" loading="lazy">
+            <h4 class="font-semibold text-xl mb-2 text-gray-800">Limpeza de Piscina</h4>
+            <p class="text-sm text-gray-600 mb-4">Água limpa, sem estresse.</p>
+            <a href="#orcamento" class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors w-full ripple touch-feedback" onclick="gtag('event', 'click', {event_category: 'Intencao_Compra', event_label: 'Fazer_Orcamento_Piscina'}); fbq('track', 'AddToCart', {content_name: 'Limpeza de Piscina'}); selectService('piscina')">
+              Fazer meu orçamento
+            </a>
+          </div>
+        </div>
+      </section>
+
+<!-- ============================================ -->
+<!-- SEÇÃO: DEPOIMENTOS -->
+<!-- ============================================ -->
+<section class="py-16 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl sm:text-4xl font-bold text-center mb-12 text-gray-800">O que dizem os clientes?</h2>
+    
+    <!-- Carrossel de Depoimentos -->
+    <div class="relative overflow-hidden">
+      <div id="testimonials-container" class="flex transition-transform duration-500 ease-in-out">
+        
+        <!-- Depoimento 1 - Hárina Rodrigues -->
+        <div class="testimonial-slide min-w-full px-4">
+          <div class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-2xl shadow-lg max-w-2xl mx-auto">
+            <div class="flex items-center mb-4">
+              <img src="https://img.freepik.com/fotos-gratis/pessoa-fazendo-uma-visita-a-casa-on-line_23-2151050244.jpg?semt=ais_hybrid&w=740&q=80" alt="Hárina Rodrigues" class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-green-600">
+              <div>
+                <h3 class="font-bold text-lg text-gray-800">Hárina S., Centro</h3>
+                <p class="text-sm text-green-600 font-semibold">Faxina Residencial</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            </div>
+            <p class="text-gray-700 italic text-base sm:text-lg leading-relaxed">
+              “Personalizar minha faxina é o melhor de vocês! A profissional foi super atenciosa e deixou tudo impecável. Pode deixar que indico sim!”
+            </p>
+          </div>
+        </div>
+        
+        <!-- Depoimento 2 - Alysson Paulino -->
+        <div class="testimonial-slide min-w-full px-4">
+          <div class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-2xl shadow-lg max-w-2xl mx-auto">
+            <div class="flex items-center mb-4">
+              <img src="https://i.imgur.com/oDyuycml.png" alt="Alysson Paulino" class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-green-600">
+              <div>
+                <h3 class="font-bold text-lg text-gray-800">Alysson P., BTN II</h3>
+                <p class="text-sm text-green-600 font-semibold">Limpeza de Terreno</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            </div>
+            <p class="text-gray-700 italic text-base sm:text-lg leading-relaxed">
+              “Difícil achar quem faz limpeza de terreno com qualidade, mas encontrei aqui! Serviço rápido, organizado e com preço justo. Estão de parabéns!”
+            </p>
+          </div>
+        </div>
+        
+        <!-- Depoimento 3 - Maria do Carmo -->
+        <div class="testimonial-slide min-w-full px-4">
+          <div class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-2xl shadow-lg max-w-2xl mx-auto">
+            <div class="flex items-center mb-4">
+              <img src="https://img.freepik.com/fotos-premium/perto-de-uma-mulher-mais-velha-tomando-uma-selfie_432566-3452.jpg" alt="Maria do Carmo" class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-green-600">
+              <div>
+<h3 class="font-bold text-lg text-gray-800">Carmem M., Vila Nobre</h3>
+                <p class="text-sm text-green-600 font-semibold">Limpeza de Piscina</p>
+              </div>
+            </div>
+            <div class="flex mb-3">
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            </div>
+            <p class="text-gray-700 italic text-base sm:text-lg leading-relaxed">
+              “Não perder tempo procurando quem faz esse serviço me deixa tranquila e economiza um tempo enorme. Adorei a praticidade da plataforma!”
+            </p>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Indicadores de Navegação -->
+      <div class="flex justify-center mt-6 space-x-2">
+        <button onclick="changeTestimonial(0)" class="testimonial-dot w-3 h-3 rounded-full bg-green-600 transition-all"></button>
+        <button onclick="changeTestimonial(1)" class="testimonial-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></button>
+        <button onclick="changeTestimonial(2)" class="testimonial-dot w-3 h-3 rounded-full bg-gray-300 transition-all"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SEÇÃO: CLUBE QUINTAL -->
+<!-- ============================================ -->
+<section id="clube-quintal" class="py-16 sm:py-20 bg-gradient-to-br from-green-50 to-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    
+    <!-- Cabeçalho Chamativo -->
+    <div class="text-center mb-12">
+      <!-- Logo do Clube Quintal em Destaque -->
+      <img src="https://i.imgur.com/BMwC2aEl.jpg" alt="Clube Quintal" class="mx-auto mb-8 w-full max-w-[224px] sm:max-w-[314px] md:max-w-[403px] h-auto">
+      
+      <p class="text-base sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+        Bem-vindo ao Clube Quintal 🌱<br>
+        Cada serviço é mais que uma limpeza — é um passo rumo a benefícios exclusivos!
+      </p>
+    </div>
+
+    <!-- Como Funciona (3 Colunas) -->
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      
+      <!-- Ícone 1: Contrate Serviços -->
+      <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-3">📝 Contrate Serviços</h3>
+        <p class="text-gray-600 text-sm">
+          Peça qualquer serviço (faxina, limpeza de terreno ou piscina) pela plataforma.
+          Cada agendamento confirmado gera <strong class="text-green-600">pontos Quintal+</strong> automaticamente.
+        </p>
+      </div>
+
+      <!-- Ícone 2: Acumule Pontos -->
+      <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-3">🌟 Acumule Pontos</h3>
+        <p class="text-gray-600 text-sm mb-3">
+          A cada serviço, você ganha <strong>10 pontos</strong>.<br>
+          A cada indicação, você ganha <strong>10 pontos</strong>.
+        </p>
+        <p class="text-green-700 font-semibold text-sm">
+          A cada 100 pontos = <strong>R$ 20 de crédito</strong> para usar em novos serviços.
+        </p>
+      </div>
+
+      <!-- Ícone 3: Aproveite Benefícios -->
+      <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-3">🎁 Aproveite Benefícios</h3>
+        <p class="text-gray-600 text-sm">
+          Use seus pontos, receba cupons exclusivos e participe de campanhas especiais dos membros do Clube.
+        </p>
+      </div>
+    </div>
+
+    <!-- Regras e Transparência -->
+    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg mb-8">
+      <h3 class="text-lg sm:text-2xl font-bold text-gray-800 mb-4">Como os pontos funcionam:</h3>
+      <ul class="space-y-2 text-gray-700 text-sm sm:text-base mb-6">
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Os pontos são liberados após a confirmação do serviço realizado.</span>
+        </li>
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Cada <strong>100 pontos = R$ 20 de crédito</strong> para usar em qualquer serviço.</span>
+        </li>
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Os pontos expiram após <strong>6 meses</strong> sem novos serviços.</span>
+        </li>
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Os créditos não são cumulativos com cupons promocionais.</span>
+        </li>
+      </ul>
+      
+      <h3 class="text-xl font-bold text-gray-800 mb-3">⚠️ Importante:</h3>
+      <ul class="space-y-2 text-gray-700 text-sm sm:text-base">
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Cancelamentos de serviços com menos de 24h não geram pontos.</span>
+        </li>
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>Ao atingir os 100 pontos o crédito será automático no seu próximo agendamento (sem necessidade de cupom).</span>
+        </li>
+        <li class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span>O Clube é <strong>gratuito e automático</strong>, basta contratar pela plataforma.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center bg-green-600 text-white p-6 sm:p-8 rounded-xl shadow-lg">
+      <p class="text-base sm:text-lg font-semibold mb-4">
+        Já é cliente da Quintal Limpo? Então você já faz parte do Clube!
+      </p>
+      <a href="#servicos" class="inline-block bg-white text-green-600 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors text-sm sm:text-base whitespace-nowrap">
+        Agendar serviço e acumular pontos
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- SEÇÃO: SOBRE NÓS -->
+<!-- ============================================ -->
+<section id="sobre-nos" class="py-16 sm:py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    
+    <!-- Título e Subtítulo -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+        Sobre a Quintal Limpo
+      </h2>
+      <p class="text-xl text-green-600 font-semibold">
+        Cuidamos dos espaços que cuidam de você.
+      </p>
+    </div>
+
+    <!-- Texto Principal -->
+    <div class="bg-gray-50 p-6 sm:p-8 rounded-xl mb-12">
+      <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+        A <strong>Quintal Limpo</strong> nasceu com o propósito de trazer mais tranquilidade para quem contrata e valorizar quem limpa.
+        Somos uma plataforma que conecta clientes a profissionais de limpeza verificados, oferecendo praticidade em cada serviço.
+      </p>
+      <p class="text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+        Nosso objetivo é fortalecer a economia das comunidades, criando oportunidades reais para trabalhadores e soluções eficientes para quem busca um ambiente mais limpo e organizado.
+      </p>
+      <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
+        Mais do que uma startup de serviços, acreditamos em <strong>inovação com impacto social</strong> — porque cada casa limpa é também um espaço de dignidade, bem-estar e cuidado com o outro.
+      </p>
+    </div>
+
+    <!-- Missão -->
+    <div class="bg-green-50 p-6 sm:p-8 rounded-xl border-l-4 border-green-600 mb-12">
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">🎯 Missão</h3>
+      <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
+        Tornar a limpeza um serviço cada vez mais <strong>confiável, valorizado e acessível</strong>,
+        promovendo impacto social e desenvolvimento local por meio da tecnologia.
+      </p>
+    </div>
+
+    <!-- Reconhecimentos e Premiações -->
+    <div class="mb-12">
+      <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Reconhecimentos e Premiações</h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Desavexe Tech -->
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+          <img src="https://getin.inf.br/desavexetech/src/image/marca-desavexetech-navbar.svg" alt="Desavexe Tech" class="h-16 mx-auto mb-4">
+          <p class="text-sm text-gray-700 font-semibold">Finalista Desavexe Tech 2025</p>
+        </div>
+
+        <!-- Todxs Brasil + Nivea -->
+        <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+          <div class="flex justify-center items-center space-x-2 mb-4">
+            <img src="https://todxs.org/wp-content/uploads/2024/05/logo-horizontal-rosa-2.png" alt="Todxs Brasil" class="h-12">
+            <span class="text-2xl text-gray-400">+</span>
+            <img src="https://yt3.googleusercontent.com/5VE9VRDX_WfYRGdrF7hikF3uHYT02A4aUt4GT_A4FKU_-8q1EkTx6AqMzFiNqBMxpCVu_Cz9vA=s900-c-k-c0x00ffffff-no-rj" alt="Nivea" class="h-12 rounded-full">
+          </div>
+          <p class="text-sm text-gray-700 font-semibold">Vencedor do Programa de Ideação Todxs Brasil com Nivea Brasil</p>
+        </div>
+
+        <!-- BTX 2025 -->
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+          <img src="https://bahiatechexperience.com.br/assets/logo-30a4d953.png" alt="Bahia Tech Experience" class="h-20 mx-auto mb-4">
+          <p class="text-sm text-white font-semibold">Expositor BTX 2025</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Por Trás da Quintal Limpo -->
+    <div class="bg-gradient-to-br from-green-50 to-white p-6 sm:p-8 rounded-xl mb-8">
+      <h3 class="text-2xl font-bold text-gray-800 mb-6 whitespace-nowrap">Por Trás da Quintal Limpo</h3>
+      
+      <!-- Layout com foto e texto -->
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-6">
+        <!-- Foto Alef -->
+        <a href="https://www.instagram.com/eualefcristo/" target="_blank" rel="noopener noreferrer" onclick="gtag('event', 'click', {event_category: 'Social', event_label: 'Instagram Alef Cristo'}); fbq('track', 'Contact');">
+          <img src="https://i.imgur.com/RqdMQh4l.jpg" alt="Alef Cristo" class="w-32 h-32 rounded-full object-cover shadow-lg flex-shrink-0 hover:scale-105 transition-transform cursor-pointer">
+        </a>
+        
+        <!-- Texto -->
+        <div class="flex-1">
+          <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
+            Por trás da Quintal Limpo existe uma equipe dedicada, guiada por <a href="https://www.instagram.com/eualefcristo/" target="_blank" rel="noopener noreferrer" class="font-bold text-green-600 hover:text-green-700 hover:underline" onclick="gtag('event', 'click', {event_category: 'Social', event_label: 'Instagram Alef Cristo'}); fbq('track', 'Contact');">Alef Cristo</a>, um dos fundadores da startup.
+            Com experiência em marketing, desenvolvimento de startups e impacto social, Alef tem sido a voz da Quintal Limpo em eventos, feiras e palcos de inovação.
+          </p>
+        </div>
+      </div>
+      
+      <blockquote class="border-l-4 border-green-600 pl-4 italic text-gray-700 text-base sm:text-lg">
+        “A inovação precisa ser descentralizada para gerar impacto real e é isso que estamos fazendo a partir do interior.”
+        <br>
+        <span class="text-sm font-semibold text-green-600 not-italic">— Alef Cristo, Fundador da Quintal Limpo</span>
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+      
+      <section id="orcamento" class="py-12 sm:py-16 bg-white">
+        <div class="text-center mb-12">
+          <h2 id="orcamento-title" class="text-3xl sm:text-4xl font-bold text-gray-800 hidden">Personalize seu serviço</h2>
+          
+          <p id="click-instruction" class="mt-4 text-base text-gray-600 font-medium hidden">👇 Clique no botão para saber mais</p>
+          
+          <button id="btn-descricao-faxina" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors hidden" onclick="gtag('event', 'click', {event_category: 'Escolha_Servico', event_label: 'Botao_Faxina_Residencial'}); fbq('track', 'ViewContent', {content_name: 'Faxina Residencial'}); openModal('modal-descricao-faxina')">
+           Entenda a Limpeza Padrão
+          </button>
+          
+          <button id="btn-descricao-terreno" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors hidden" onclick="gtag('event', 'click', {event_category: 'Escolha_Servico', event_label: 'Botao_Limpeza_Terreno'}); fbq('track', 'ViewContent', {content_name: 'Limpeza de Terreno'}); openModal('modal-ferramentas-terreno')">
+            Ferramentas e Retirada de Entulho
+          </button>
+
+          <button id="btn-descricao-piscina" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors hidden" onclick="gtag('event', 'click', {event_category: 'Escolha_Servico', event_label: 'Botao_Limpeza_Piscina'}); fbq('track', 'ViewContent', {content_name: 'Limpeza de Piscina'}); openModal('modal-orientacao-produtos-piscina')">
+            Orientação e Produtos
+          </button>
+
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+          
+          <div id="orcamento-faxina-content" class="bg-white rounded-2xl shadow-lg p-8 custom-scroll hidden">
+            
+         <div class="mb-8">
+  <label class="block text-lg font-semibold text-gray-800 mb-4">Como é seu lar?</label>
+  <p class="text-sm text-gray-600 mb-2">Responda com base na sua realidade.</p>
+  <p class="text-sm font-bold mb-4" style="color: #006400;">1 cozinha e 1 sala já inclusas</p>
+  <p class="text-sm font-bold mb-4" style="color: #48a348;">Apartamento ou Casa?</p>
+
+  <div class="grid grid-cols-2 gap-2">
+                <label id="label-apartamento" class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors text-center">
+                  <input type="radio" name="tamanho" value="Apartamento" class="hidden" onchange="handleTamanhoChange(this); toggleChip(this)">
+                  <span>Apartamento</span>
+                </label>
+                <label id="label-casa" class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors text-center">
+                  <input type="radio" name="tamanho" value="Casa" class="hidden" onchange="handleTamanhoChange(this); toggleChip(this)">
+                  <span>Casa</span>
+                </label>
+  </div>
+</div>
+
+
+
+            <div id="m2-selection-container" class="mb-8 hidden">
+              <label class="block text-lg font-semibold text-gray-800 mb-4">Tamanho em metros quadrados (m²)</label>
+              <div class="flex flex-wrap gap-2">
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="radio" name="m2" value="Até 100 m²" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Até 100 m²</span>
+                </label>
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="radio" name="m2" value="100 a 200 m²" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>100 a 200 m²</span>
+                </label>
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="radio" name="m2" value="200 a 300 m²" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>200 a 300 m²</span>
+                </label>
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="radio" name="m2" value="Acima de 300 m²" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Acima de 300 m²</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-800 mb-4">Quantos quartos?</label>
+              <div class="flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
+                <button type="button" class="text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-600 w-10 h-10 flex items-center justify-center text-xl font-light" onclick="updateCounter('quartos', -1, 'faxina')">
+                  -
+                </button>
+                <span id="quartos-display-faxina" class="text-base font-semibold text-gray-800">2 quartos</span>
+                <button type="button" class="text-green-600 hover:bg-green-50 p-2 rounded-lg border border-green-600 w-10 h-10 flex items-center justify-center text-xl font-light" onclick="updateCounter('quartos', 1, 'faxina')">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-800 mb-4">Quantos banheiros?</label>
+              <div class="flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg bg-gray-50">
+                <button type="button" class="text-red-600 hover:bg-red-50 p-2 rounded-lg border border-red-600 w-10 h-10 flex items-center justify-center text-xl font-light" onclick="updateCounter('banheiros', -1, 'faxina')">
+                  -
+                </button>
+                <span id="banheiros-display-faxina" class="text-base font-semibold text-gray-800">1 banheiro</span>
+                <button type="button" class="text-green-600 hover:bg-green-50 p-2 rounded-lg border border-green-600 w-10 h-10 flex items-center justify-center text-xl font-light" onclick="updateCounter('banheiros', 1, 'faxina')">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <label class="block text-lg font-semibold text-gray-800 mb-4">Serviços Extras</label>
+               <p class="text-sm font-bold mb-4" style="color: #48a348;">Selecione o serviço que precisa</p>
+              <div class="flex flex-wrap gap-2">
+                
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="0" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Não desejo adicionar</span>
+                </label>
+                
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="10" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza interior dos armários da cozinha</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="20" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza de todos os vidros da casa de fácil acesso</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="30" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Lavar roupas na máquina e estender</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="25" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza e organização do guarda-roupa de 1 quarto</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="36" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza e organização do guarda-roupa de 2 quartos</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="47" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza e organização do guarda-roupa de 3 quartos</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="30" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza de 1 área externa</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="50" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza de 2 áreas externas</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="25" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Louça acumulada — pia cheia, louça de mais de um dia</span>
+                </label>
+
+                <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                  <input type="checkbox" name="extras-faxina" value="60" class="hidden" onchange="updateBudget('faxina'); toggleChip(this)">
+                  <span>Limpeza pesada do chão da sala e cozinha realizada de joelhos</span>
+                </label>
+              </div>
+            </div>
+            
+            <div id="orcamento-faxina-summary-container">
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4"> Escolha a Data do Serviço</label>
+                <input type="date" id="serviceDateFaxina" class="calendar-input w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-green-500 focus:border-green-500 transition-colors" onchange="updateBudget('faxina')">
+              </div>
+              
+              <div class="budget-summary p-6 rounded-xl mb-8 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Resumo do Orçamento (Faxina)</h3>
+                <div class="space-y-2 text-sm">
+                  <p class="flex justify-between"><span>Tamanho da Casa:</span> <span id="summaryTamanhoFaxina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Quartos:</span> <span id="summaryQuartosFaxina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Banheiros:</span> <span id="summaryBanheirosFaxina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Serviços Extras:</span> <span id="summaryExtrasFaxina" class="font-semibold">Nenhum extra selecionado</span></p>
+                  <p class="flex justify-between"><span>Data Selecionada:</span> <span id="summaryDataFaxina" class="font-semibold">-</span></p>
+                  </div>
+                <div class="mt-4 pt-4 border-t border-green-300 flex justify-between items-center">
+                  <span class="text-lg font-bold text-gray-800">Valor do Serviço:</span>
+                  <span id="finalBudgetFaxina" class="text-xl font-bold text-green-600">R$ 0,00</span>
+                </div>
+              </div>
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Forma de Pagamento</label>
+                <div class="flex flex-wrap gap-2">
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-faxina" value="Pix à vista" class="hidden" onchange="updateBudget('faxina'); toggleChip(this); showCreditCardNote('faxina')">
+                    <span>Pix à vista (recomendado)</span>
+                  </label>
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-faxina" value="Cartão de Crédito" class="hidden" onchange="updateBudget('faxina'); toggleChip(this); showCreditCardNote('faxina')">
+                    <span>Cartão de Crédito (com acréscimo)</span>
+                  </label>
+                </div>
+                <p id="summaryPagamentoFaxina" class="text-sm font-semibold text-gray-500 mt-2">-</p>
+                <p id="creditCardNoteFaxina" class="text-sm text-orange-600 font-semibold mt-2 hidden">⚠️ O valor final com acréscimo será simulado no momento do agendamento.</p>
+              </div>
+              <div class="mt-4">
+                <p class="text-sm text-gray-700 mb-3">
+                  Para prosseguir, por favor, <a href="#" class="text-green-600 font-semibold hover:underline" onclick="gtag('event', 'click', {event_category: 'Interacao_Confianca', event_label: 'Termos_Uso'}); fbq('track', 'ViewContent', {content_name: 'Termos de Uso'}); openModal('modal-termos'); return false;">leia os Termos de Uso e Política de Funcionamento.</a>
+                </p>
+                <label class="flex items-start cursor-pointer">
+                  <input type="checkbox" id="termsAcceptedFaxina" class="w-5 h-5 text-green-600 cursor-pointer mt-0.5 flex-shrink-0" onchange="updateBudget('faxina')">
+                  <span class="ml-3 text-sm text-gray-700">Ao marcar, confirmo que li e concordo com os Termos e Políticas da Quintal Limpo.</span>
+                </label>
+              </div>
+
+
+              <button id="whatsappBtnFaxina" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors btn-disabled mt-6" disabled>
+                Confirmar no WhatsApp
+              </button>
+            </div>
+          </div>
+          
+          <div id="orcamento-terreno-content" class="bg-white rounded-2xl shadow-lg p-8 custom-scroll hidden">
+            
+            <div class="mb-8 border-b pb-4">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Como é seu terreno?</label>
+              <p class="text-sm text-gray-600 mb-2">Responda com base na sua realidade!</p>
+            </div>
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Qual o tamanho aproximado do terreno?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoTerreno" value="Até 100m²" data-price="90" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Até 100m²</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoTerreno" value="101 a 200m²" data-price="110" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>101 a 200m²</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoTerreno" value="201 a 300m²" data-price="130" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>201 a 300m²</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoTerreno" value="301 a 400m²" data-price="150" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>301 a 400m²</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoTerreno" value="400 a 500m²" data-price="170" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>400 a 500m²</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Qual a densidade do mato?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="densidadeMato" value="Baixo (grama ou mato ralo)" data-price="0" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Baixo (grama ou mato ralo)</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="densidadeMato" value="Médio (mato na altura da canela até o joelho)" data-price="10" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Médio (mato na altura da canela até o joelho)</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="densidadeMato" value="Alto (mato alto, arbustos ou com troncos)" data-price="20" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Alto (mato alto, arbustos ou com troncos)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Há lixo ou entulho espalhado no terreno?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="lixoEntulho" value="Não, o terreno está só com mato mesmo" data-price="0" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Não, o terreno está só com mato mesmo</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="lixoEntulho" value="Sim, tem lixo leve (garrafas, sacolas, papelão)" data-price="10" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Sim, tem lixo leve (garrafas, sacolas, papelão)</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="lixoEntulho" value="Sim, tem entulho pesado (madeira, restos de obra)" data-price="30" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Sim, tem entulho pesado (madeira, restos de obra)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">O terreno é em morro ou plano?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="inclinacao" value="Plano" data-price="0" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Plano</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="inclinacao" value="Levemente inclinado" data-price="0" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Levemente inclinado</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="inclinacao" value="Morro inclinado / difícil acesso" data-price="20" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Morro inclinado / difícil acesso</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Será necessário retirar o mato após o corte?</label>
+                <p class="text-sm text-gray-600 mb-2 font-semibold text-green-700">(Atenção: Se sim, é necessário que possua carrinho de mão)</p>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="retiradaMato" value="Não, pode deixar no terreno" data-price="0" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Não, pode deixar no terreno</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="retiradaMato" value="Sim, preciso que levem o mato até o descarte mais próximo" data-price="40" class="hidden" onchange="updateBudget('terreno'); toggleChip(this)">
+                        <span>Sim, preciso que levem o mato até o descarte mais próximo</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="orcamento-terreno-summary-container">
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Escolha a Data do Serviço</label>
+                <input type="date" id="serviceDateTerreno" class="calendar-input w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-green-500 focus:border-green-500 transition-colors" onchange="updateBudget('terreno')">
+              </div>
+              
+              <div class="budget-summary p-6 rounded-xl mb-8 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Resumo do Orçamento (Terreno)</h3>
+                <div class="space-y-2 text-sm">
+                  <p class="flex justify-between"><span>Tamanho:</span> <span id="summaryTamanhoTerreno" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Densidade:</span> <span id="summaryDensidadeTerreno" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Lixo/Entulho:</span> <span id="summaryLixoTerreno" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Inclinação:</span> <span id="summaryInclinacaoTerreno" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Retirada do Mato:</span> <span id="summaryRetiradaMatoTerreno" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Data Selecionada:</span> <span id="summaryDataTerreno" class="font-semibold">-</span></p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-green-300 flex justify-between items-center">
+                  <span class="text-lg font-bold text-gray-800">Valor do Serviço:</span>
+                  <span id="finalBudgetTerreno" class="text-xl font-bold text-green-600">R$ 0,00</span>
+                </div>
+              </div>
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Forma de Pagamento</label>
+                <div class="flex flex-wrap gap-2">
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-terreno" value="Pix à vista" class="hidden" onchange="updateBudget('terreno'); toggleChip(this); showCreditCardNote('terreno')">
+                    <span>Pix à vista (recomendado)</span>
+                  </label>
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-terreno" value="Cartão de Crédito" class="hidden" onchange="updateBudget('terreno'); toggleChip(this); showCreditCardNote('terreno')">
+                    <span>Cartão de Crédito (com acréscimo)</span>
+                  </label>
+                </div>
+                <p id="summaryPagamentoTerreno" class="text-sm font-semibold text-gray-500 mt-2">-</p>
+                <p id="creditCardNoteTerreno" class="text-sm text-orange-600 font-semibold mt-2 hidden">⚠️ O valor final com acréscimo será simulado no momento do agendamento.</p>
+              </div>
+              <div class="mt-4">
+                <p class="text-sm text-gray-700 mb-3">
+                  Para prosseguir, por favor, <a href="#" class="text-green-600 font-semibold hover:underline" onclick="gtag('event', 'click', {event_category: 'Interacao_Confianca', event_label: 'Termos_Uso'}); fbq('track', 'ViewContent', {content_name: 'Termos de Uso'}); openModal('modal-termos'); return false;">leia os Termos de Uso e Política de Funcionamento.</a>
+                </p>
+                <label class="flex items-start cursor-pointer">
+                  <input type="checkbox" id="termsAcceptedTerreno" class="w-5 h-5 text-green-600 cursor-pointer mt-0.5 flex-shrink-0" onchange="updateBudget('terreno')">
+                  <span class="ml-3 text-sm text-gray-700">Ao marcar, confirmo que li e concordo com os Termos e Políticas da Quintal Limpo.</span>
+                </label>
+              </div>
+
+
+              <button id="whatsappBtnTerreno" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors btn-disabled mt-6" disabled>
+                Confirmar no WhatsApp
+              </button>
+            </div>
+          </div>
+
+          <div id="orcamento-piscina-content" class="bg-white rounded-2xl shadow-lg p-8 custom-scroll hidden">
+            
+            <div class="mb-8 border-b pb-4">
+                 <label class="block text-lg font-semibold text-gray-800 mb-4">Como é sua Piscina?</label>
+              <p class="text-sm text-gray-600 mb-2">Responda com base na sua realidade!</p>
+            </div>
+            
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Qual o tamanho aproximado da sua piscina?</label>
+                <p class="text-sm text-gray-600 mb-2">(Use como base o volume em litros. Caso não saiba, escolha por aproximação.)</p>
+                <div class="flex flex-wrap gap-2">
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoPiscina" value="Entre 8.321 a 12.480 litros" data-price="140" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>8.321 a 12.480 litros</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoPiscina" value="Entre 12.481 a 18.200 litros" data-price="165" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>12.481 a 18.200 litros</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoPiscina" value="Entre 18.201 a 25.200 litros" data-price="185" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>18.201 a 25.200 litros</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoPiscina" value="Entre 25.201 a 34.300 litros" data-price="215" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>25.201 a 34.300 litros</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tamanhoPiscina" value="Entre 34.301 a 44.800 litros" data-price="230" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>34.301 a 44.800 litros</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">Qual o tipo de limpeza desejada?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tipoLimpezaPiscina" value="Limpeza básica de manutenção" data-price="0" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>Limpeza básica de manutenção (Retirada de sujeiras visíveis, peneiração e tratamento químico leve)</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="tipoLimpezaPiscina" value="Limpeza completa (Piscina Verde / Choque)" data-price="60" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>Limpeza completa: Piscina Verde / Choque (Inclui escovação, aspiração e tratamento químico de choque)</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-8">
+                <label class="block text-base font-semibold text-gray-800 mb-4">A água está turva ou esverdeada?</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="estadoAguaPiscina" value="Sim, com lodo/turvação/algas/verde" data-price="20" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>Sim, com lodo/turvação/algas/verde</span>
+                    </label>
+                    <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                        <input type="radio" name="estadoAguaPiscina" value="Não, sujeira leve" data-price="0" class="hidden" onchange="updateBudget('piscina'); toggleChip(this)">
+                        <span>Não, sujeira leve</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="orcamento-piscina-summary-container">
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Escolha a Data do Serviço</label>
+                <input type="date" id="serviceDatePiscina" class="calendar-input w-full p-3 border-2 border-gray-200 rounded-lg focus:ring-green-500 focus:border-green-500 transition-colors" onchange="updateBudget('piscina')">
+              </div>
+              
+              <div class="budget-summary p-6 rounded-xl mb-8 slide-in">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Resumo do Orçamento (Piscina)</h3>
+                <div class="space-y-2 text-sm">
+                  <p class="flex justify-between"><span>Tamanho:</span> <span id="summaryTamanhoPiscina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Tipo de Limpeza:</span> <span id="summaryTipoLimpezaPiscina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Estado da Água:</span> <span id="summaryEstadoAguaPiscina" class="font-semibold">-</span></p>
+                  <p class="flex justify-between"><span>Data Selecionada:</span> <span id="summaryDataPiscina" class="font-semibold">-</span></p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-green-300 flex justify-between items-center">
+                  <span class="text-lg font-bold text-gray-800">Valor do Serviço:</span>
+                  <span id="finalBudgetPiscina" class="text-xl font-bold text-green-600">R$ 0,00</span>
+                </div>
+              </div>
+              <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-800 mb-4">Forma de Pagamento</label>
+                <div class="flex flex-wrap gap-2">
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-piscina" value="Pix à vista" class="hidden" onchange="updateBudget('piscina'); toggleChip(this); showCreditCardNote('piscina')">
+                    <span>Pix à vista (recomendado)</span>
+                  </label>
+                  <label class="chip-selectable px-3 py-2 text-sm rounded-lg border border-gray-300 bg-gray-100 text-gray-700 cursor-pointer transition-colors">
+                    <input type="radio" name="pagamento-piscina" value="Cartão de Crédito" class="hidden" onchange="updateBudget('piscina'); toggleChip(this); showCreditCardNote('piscina')">
+                    <span>Cartão de Crédito (com acréscimo)</span>
+                  </label>
+                </div>
+                <p id="summaryPagamentoPiscina" class="text-sm font-semibold text-gray-500 mt-2">-</p>
+                <p id="creditCardNotePiscina" class="text-sm text-orange-600 font-semibold mt-2 hidden">⚠️ O valor final com acréscimo será simulado no momento do agendamento.</p>
+              </div>
+              <div class="mt-4">
+                <p class="text-sm text-gray-700 mb-3">
+                  Para prosseguir, por favor, <a href="#" class="text-green-600 font-semibold hover:underline" onclick="gtag('event', 'click', {event_category: 'Interacao_Confianca', event_label: 'Termos_Uso'}); fbq('track', 'ViewContent', {content_name: 'Termos de Uso'}); openModal('modal-termos'); return false;">leia os Termos de Uso e Política de Funcionamento.</a>
+                </p>
+                <label class="flex items-start cursor-pointer">
+                  <input type="checkbox" id="termsAcceptedPiscina" class="w-5 h-5 text-green-600 cursor-pointer mt-0.5 flex-shrink-0" onchange="updateBudget('piscina')">
+                  <span class="ml-3 text-sm text-gray-700">Ao marcar, confirmo que li e concordo com os Termos e Políticas da Quintal Limpo.</span>
+                </label>
+              </div>
+
+
+              <button id="whatsappBtnPiscina" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors btn-disabled mt-6" disabled>
+               Confirmar no WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="modal-descricao-faxina" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center fade-in">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 slide-up max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b pb-3 mb-4">
+        <h3 class="text-2xl font-bold text-gray-800">Descrição da Faxina Básica</h3>
+        <button onclick="closeModal('modal-descricao-faxina')" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="text-gray-700 space-y-4 text-sm">
+        <p class="font-bold text-red-600">⚠️ Importante:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Os materiais de limpeza são fornecidos pelo cliente, conforme sua preferência.</li>
+          <li>Prezamos pela saúde e segurança das nossas profissionais parceiras.</li>
+          <li>As nossas profissionais não realizam a limpeza de vidros e janelas acima de 2,5 metros de altura, por questões de segurança. </li>
+          <li>Móveis grandes ou pesados não serão afastados durante a limpeza, evitando riscos de esforço físico excessivo ou acidentes.</li>
+        </ul>
+        <p class="font-bold text-green-600">💚 Contamos com a sua compreensão!</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">🍳 Cozinha</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Limpeza externa de armários.</li>
+          <li>Lavar, secar e guardar louça básica (10 pratos, 6 copos, 6 conjuntos de talheres, 3 panelas médias).</li>
+          <li>Limpeza e organização da pia e bancadas.</li>
+          <li>Limpeza externa de eletrodomésticos (geladeira, fogão, micro-ondas, etc.).</li>
+          <li>Higienização do chão.</li>
+          <li>Retirada do lixo.</li>
+          <li>Limpeza de portas, batentes, rodapés e interruptores.</li>
+        </ul>
+
+        <h4 class="font-semibold mt-4 text-gray-800">🛋️ Sala</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Limpeza de pó em móveis e objetos decorativos.</li>
+          <li>Organização geral do ambiente.</li>
+          <li>Aspiração, varredura e limpeza do chão.</li>
+          <li>Limpeza de portas, batentes, rodapés e interruptores.</li>
+        </ul>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">🛏️ Quartos</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Arrumação da cama (troca de lençol sob solicitação, se deixado à vista).</li>
+          <li>Limpeza externa de móveis (guarda-roupa, mesas de cabeceira, etc.).</li>
+          <li>Aspiração, varredura e limpeza do chão.</li>
+          <li>Limpeza de portas, batentes, rodapés e interruptores.</li>
+        </ul>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">🚿 Banheiros</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Limpeza e desinfecção do vaso sanitário e lixeira.</li>
+          <li>Limpeza da pia, bancada e espelho.</li>
+          <li>Higienização do box, azulejos e piso.</li>
+          <li>Limpeza de portas, batentes, rodapés e interruptores.</li>
+          <li>Organização dos materiais e produtos utilizados na limpeza.</li>
+        </ul>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">➕ Serviços Extras</h4>
+        <p>Para demandas específicas como louça acumulada, Limpeza interior dos armários da cozinha, lavar roupas na máquina e estender, selecione o que precisa na opção “Serviços Extras” no momento do orçamento.</p>
+      </div>
+      <div class="mt-6 pt-4 border-t text-right">
+        <button onclick="closeModal('modal-descricao-faxina')" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-ferramentas-terreno" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center fade-in">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 slide-up max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b pb-3 mb-4">
+        <h3 class="text-2xl font-bold text-gray-800">Ferramentas e Retirada de Entulho</h3>
+        <button onclick="closeModal('modal-ferramentas-terreno')" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="text-gray-700 space-y-4 text-sm">
+        <h4 class="font-semibold mt-4 text-gray-800">🔧 Ferramentas de Capinagem</h4>
+        <p>
+            Por questões logísticas, nossos profissionais parceiros se deslocam até o local do serviço a pé, de bicicleta ou motocicleta, o que torna inviável o transporte de ferramentas grandes ou pesadas.
+            Por isso, pedimos que o cliente disponibilize as ferramentas básicas — enxada, rastelo e carrinho de mão — no local.
+        </p>
+        <p class="font-bold text-red-600 mt-4">📌 Importante:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+            <li>Ao fornecer esses materiais, você facilita o trabalho do profissional e torna o serviço mais acessível.</li>
+            <li>Esse cuidado já é considerado no cálculo dos valores personalizados, garantindo uma cobrança mais justa para todos.</li>
+        </ul>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">🚚 Retirada de Mato / Entulho</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>O corte do mato será realizado e o material amontoado no local, a menos que o serviço de retirada seja contratado.</li>
+          <li>Caso a opção “Sim, preciso que levem o mato até o descarte mais próximo” seja selecionada, o profissional fará o transporte até o ponto de descarte mais próximo, desde que o cliente forneça um carrinho de mão.</li>
+          <li>Este serviço não inclui o descarte de entulho de obra ou resíduos pesados.</li>
+        </ul>
+        
+        <p class="font-bold text-red-600 mt-4">⚠️ Avisos Importantes</p>
+        <ul class="list-disc list-inside ml-4 space-y-1 text-red-600">
+          <li>A Quintal Limpo não se responsabiliza por danos a objetos ou estruturas não visíveis no terreno (como pedras, canos ou tubulações sem identificação).</li>
+          <li>É responsabilidade do cliente informar sobre condições específicas do terreno antes da execução do serviço.</li>
+        </ul>
+      </div>
+      <div class="mt-6 pt-4 border-t text-right">
+        <button onclick="closeModal('modal-ferramentas-terreno')" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-orientacao-produtos-piscina" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center fade-in">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 slide-up max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b pb-3 mb-4">
+        <h3 class="text-2xl font-bold text-gray-800">Orientação e Produtos (Piscina)</h3>
+        <button onclick="closeModal('modal-orientacao-produtos-piscina')" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="text-gray-700 space-y-4 text-sm">
+        <p class="font-bold text-red-600">Importante:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1 text-red-600">
+          <li>Não realizamos manutenção ou conserto de motores, bombas ou equipamentos hidráulicos.</li>
+          <li>Para a limpeza, é necessário que o cliente possua: Cabo, peneira e flutuador.</li>
+          <li>Para tratamento químico, o cliente deve fornecer os produtos indicados conforme o tipo de limpeza.</li>
+        </ul>
+        
+        <p class="mt-4 font-semibold text-gray-800">Confira os produtos necessários de acordo com o tipo de limpeza que escolheu:</p>
+
+        <h4 class="font-semibold mt-4 text-green-600">✅ Limpeza Básica de Manutenção:</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Cloro (granulado ou pastilhas)</li>
+          <li>Clarificante</li>
+          <li>Elevador/Redutor de pH (se necessário)</li>
+          <li>Algicida de manutenção</li>
+        </ul>
+
+        <h4 class="font-semibold mt-4 text-blue-600">🔷 Limpeza Completa (Piscina Verde / Choque):</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Algicida de choque</li>
+          <li>Cloro de choque (concentrado)</li>
+          <li>Sulfato de alumínio ou clarificante (floculante)</li>
+          <li>Barrilha (carbonato de sódio) ou elevador de alcalinidade</li>
+          <li>Redutor de pH (se necessário)</li>
+        </ul>
+
+        <p class="font-bold text-red-600 mt-4">Se você ainda não possui os equipamentos ou produtos químicos, o serviço não pode ser realizado.</p>
+      </div>
+      <div class="mt-6 pt-4 border-t text-right">
+        <button onclick="closeModal('modal-orientacao-produtos-piscina')" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-termos" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center fade-in">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-6 slide-up max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-start border-b pb-3 mb-4">
+        <h3 class="text-2xl font-bold text-gray-800">Termos de Uso e Política de Funcionamento</h3>
+        <button onclick="closeModal('modal-termos')" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="text-gray-700 space-y-4 text-sm">
+        <h4 class="font-semibold text-gray-800">1. Aceitação dos Termos</h4>
+        <p>Ao solicitar um orçamento, confirmar um agendamento ou utilizar qualquer serviço da Quintal Limpo, o cliente declara ter lido, entendido e aceitado as condições descritas neste documento.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">2. Função da Plataforma</h4>
+        <p>A Quintal Limpo atua como intermediadora digital, aproximando clientes e profissionais parceiros de forma segura e eficiente.</p>
+        <p>A responsabilidade pela execução do serviço é do profissional parceiro autônomo, e a Quintal Limpo atua no suporte, gestão de pagamentos e curadoria dos prestadores.</p>
+
+        <h4 class="font-semibold mt-4 text-gray-800">3. Curadoria e Segurança</h4>
+        <p>Antes de ingressar na plataforma, cada profissional parceiro passa por um processo de verificação de antecedentes, histórico profissional e treinamento de conduta.</p>
+        <p>Apesar dessas medidas preventivas, a Quintal Limpo não pode garantir comportamento futuro ou se responsabilizar por atos individuais de terceiros.</p>
+        <p>Em caso de qualquer ocorrência, prestamos suporte imediato e colaboramos com autoridades competentes, disponibilizando dados mediante solicitação legal.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">4. Proteção de Dados — LGPD</h4>
+        <p>A Quintal Limpo cumpre integralmente a Lei Geral de Proteção de Dados (Lei 13.709/2018).</p>
+        <p>Os dados coletados são usados exclusivamente para:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>viabilizar a operação dos serviços contratados;</li>
+          <li>personalizar a experiência do cliente;</li>
+          <li>manter contato para suporte e confirmações.</li>
+        </ul>
+        <p>Seus dados nunca serão vendidos ou compartilhados com terceiros sem consentimento.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">5. Pagamento e Confirmação do Serviço</h4>
+        <p>O pagamento é realizado no momento do agendamento, garantindo a reserva do profissional parceiro.</p>
+        <p>Após a confirmação, o cliente recebe os detalhes do agendamento e informações sobre o profissional designado.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">6. Política de Cancelamento e Reembolso</h4>
+        <p>Entendemos que imprevistos acontecem. Por isso:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Cancelamentos com mais de 24 horas de antecedência → reembolso integral;</li>
+          <li>Cancelamentos com menos de 24 horas → reembolso de 80%;</li>
+          <li>Em caso de imprevisto do profissional, a Quintal Limpo reagenda o serviço sem custo adicional.</li>
+        </ul>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">7. Materiais e Acesso ao Local</h4>
+        <p>O cliente deve fornecer ferramentas básicas:</p>
+        <p><strong>Materiais:</strong></p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>Para faxinas e limpezas, o cliente deve fornecer todos os materiais e equipamentos necessários (produtos, vassouras, panos, etc.).</li>
+          <li><strong>Terrenos:</strong> Em serviços de Capinagem de Terreno com retirada de mato, o cliente deve fornecer um carrinho de mão para o transporte e ferramentas (como enxada, rastelo e foice e etc).</li>
+          <li><strong>Piscina:</strong> Em serviços de Limpeza de Piscina, o cliente deve fornecer cabo, peneira, flutuador e os produtos químicos necessários.</li>
+        </ul>
+        <p>Essa informação é reforçada durante o agendamento.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">8. Responsabilidade da Quintal Limpo</h4>
+        <p>A Quintal Limpo busca garantir transparência, segurança e qualidade na intermediação dos serviços.</p>
+        <p>No entanto, não se responsabiliza por:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+          <li>danos causados por uso indevido do ambiente ou materiais;</li>
+          <li>informações incorretas fornecidas pelo cliente ou profissional;</li>
+          <li>condutas individuais fora do escopo do serviço contratado.</li>
+        </ul>
+        <p>Nos comprometemos, contudo, a acompanhar todos os casos e buscar soluções justas para ambas as partes.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">9. Propriedade Intelectual</h4>
+        <p>Todo o conteúdo da plataforma, incluindo nome, marca, layout e materiais visuais da Quintal Limpo, é protegido por leis de propriedade intelectual.</p>
+        <p>O uso não autorizado é proibido e pode gerar sanções legais.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">10. Atualizações dos Termos</h4>
+        <p>A Quintal Limpo poderá alterar estes Termos de Uso a qualquer momento, garantindo que a versão mais recente esteja sempre disponível no site.</p>
+        <p>O uso continuado dos serviços após modificações implica aceitação das novas condições.</p>
+        
+        <h4 class="font-semibold mt-4 text-gray-800">11. Contato e Suporte</h4>
+        <p>Em caso de dúvidas, cancelamentos, suporte ou ocorrências, entre em contato com nossa equipe pelo WhatsApp oficial: (75 99176-0518).</p>
+        <p>Estamos aqui para garantir que sua experiência seja justa e tranquila. 🌿</p>
+      </div>
+      <div class="mt-6 pt-4 border-t text-right">
+        <button onclick="closeModal('modal-termos')" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">Fechar e Concordar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificações Rotativas -->
+  <div id="notification-float" class="fixed bottom-20 right-4 z-50 bg-white p-3 rounded-xl shadow-2xl border-l-4 border-green-600 max-w-xs hidden animate-slide-in">
+    <p id="notification-message" class="text-xs sm:text-sm font-semibold text-gray-800">
+      <!-- Mensagem dinâmica aqui -->
+    </p>
+  </div>
+
+
+<script>
+    // Configurações e Mapeamentos
+    const whatsappNumber = "5575991760518"; // Número oficial Quintal Limpo
+    const basePricesFaxina = {
+      'Até 100 m²': 100,
+      '100 a 200 m²': 115,
+      '200 a 300 m²': 125,
+      'Acima de 300 m²': 150
+    };
+    const roomPrices = {
+      quartos: 15, // Preço por quarto adicional (2 já inclusos)
+      banheiros: 15 // Preço por banheiro adicional (1 já incluso)
+    };
+    const initialRooms = {
+      quartos: 2,
+      banheiros: 1
+    };
+    const basePricesPiscina = {
+      'Até 3.600 litros': 100.00,
+      'Entre 3.601 a 5.600 litros': 115.00,
+      'Entre 5.601 a 8.320 litros': 135.00,
+      'Entre 8.321 a 12.480 litros': 150.00,
+      'Entre 12.481 a 18.200 litros': 175.00,
+      'Entre 18.201 a 25.200 litros': 195.00,
+      'Entre 25.201 a 34.300 litros': 225.00,
+      'Entre 34.301 a 44.800 litros': 240.00
+    };
+
+
+    let counters = {
+      faxina: {
+        quartos: initialRooms.quartos,
+        banheiros: initialRooms.banheiros
+      }
+    };
+
+    // FUNÇÕES DE UTILIDADE
+    function selectService(service) {
+      document.getElementById('orcamento-title').classList.remove('hidden');
+      document.getElementById('click-instruction').classList.remove('hidden');
+      
+      const faxinaContent = document.getElementById('orcamento-faxina-content');
+      const terrenoContent = document.getElementById('orcamento-terreno-content');
+      const piscinaContent = document.getElementById('orcamento-piscina-content'); // NOVO
+      
+      const btnDescricaoFaxina = document.getElementById('btn-descricao-faxina');
+      const btnDescricaoTerreno = document.getElementById('btn-descricao-terreno');
+      const btnDescricaoPiscina = document.getElementById('btn-descricao-piscina'); // NOVO
+
+      // Esconder todos os conteúdos e botões de descrição
+      faxinaContent.classList.add('hidden');
+      terrenoContent.classList.add('hidden');
+      piscinaContent.classList.add('hidden'); // NOVO
+      btnDescricaoFaxina.classList.add('hidden');
+      btnDescricaoTerreno.classList.add('hidden');
+      btnDescricaoPiscina.classList.add('hidden'); // NOVO
+
+
+      if (service === 'faxina') {
+        faxinaContent.classList.remove('hidden');
+        btnDescricaoFaxina.classList.remove('hidden');
+        handleTamanhoChange(document.querySelector('input[name="tamanho"]:checked')); 
+      } else if (service === 'terreno') {
+        terrenoContent.classList.remove('hidden');
+        btnDescricaoTerreno.classList.remove('hidden');
+        updateBudget('terreno'); 
+      } else if (service === 'piscina') { // NOVO
+        piscinaContent.classList.remove('hidden');
+        btnDescricaoPiscina.classList.remove('hidden');
+        updateBudget('piscina'); 
+      }
+      
+      // Rola a tela para a seção de orçamento
+      document.getElementById('orcamento').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+      // Garante que o checkbox dos termos seja atualizado ao fechar
+      if (modalId === 'modal-termos') {
+        updateBudget('faxina'); 
+        updateBudget('terreno');
+        updateBudget('piscina'); // NOVO
+      }
+    }
+
+    function handleTamanhoChange(input) {
+      const m2Container = document.getElementById('m2-selection-container');
+      
+      // Mostrar m2 tanto para Apartamento quanto para Casa
+      if (input && (input.value === 'Casa' || input.value === 'Apartamento')) {
+        m2Container.classList.remove('hidden');
+        // Garanta que uma opção de m2 seja selecionada (para forçar o cálculo)
+        const selectedM2 = document.querySelector('input[name="m2"]:checked');
+        if (!selectedM2) {
+             // Simula a seleção da primeira opção se nenhuma estiver marcada
+            const firstM2Option = document.querySelector('input[name="m2"]');
+            if (firstM2Option) {
+              firstM2Option.checked = true;
+              toggleChip(firstM2Option); // Aplica o estilo visual
+            }
+        }
+        updateBudget('faxina'); // Força atualização do orçamento
+      } else {
+        m2Container.classList.add('hidden');
+      }
+      
+      updateBudget('faxina');
+    }
+
+    function updateCounter(type, change, serviceType) {
+      let currentValue = counters[serviceType][type];
+      const initialValue = initialRooms[type];
+
+      currentValue += change;
+
+      // Limite mínimo: Nunca pode ser menor que o valor inicial (já incluso)
+      if (currentValue < initialValue) {
+        currentValue = initialValue;
+      }
+
+      counters[serviceType][type] = currentValue;
+
+      // Atualiza o display
+      const displayElement = document.getElementById(`${type}-display-${serviceType}`);
+      displayElement.textContent = `${currentValue} ${type === 'quartos' ? 'quartos' : 'banheiro' + (currentValue > 1 ? 's' : '')}`;
+
+      updateBudget(serviceType);
+    }
+    
+
+
+    // FUNÇÃO PARA ALTERNAR ESTILO DOS CHIPS
+    function toggleChip(inputElement) {
+      const label = inputElement.parentElement;
+      const inputType = inputElement.type;
+      
+      if (inputType === 'radio') {
+        // Para radio buttons, remover a classe ativa de todos os chips do mesmo grupo
+        const groupName = inputElement.name;
+        const allRadiosInGroup = document.querySelectorAll(`input[name="${groupName}"]`);
+        allRadiosInGroup.forEach(radio => {
+          radio.parentElement.classList.remove('chip-active');
+        });
+        
+        // Adicionar classe ativa ao chip selecionado
+        if (inputElement.checked) {
+          label.classList.add('chip-active');
+        }
+      } else if (inputType === 'checkbox') {
+        // Para checkboxes, apenas alternar a classe no próprio chip
+        if (inputElement.checked) {
+          label.classList.add('chip-active');
+        } else {
+          label.classList.remove('chip-active');
+        }
+      }
+    }
+    
+    // Função para mostrar/ocultar nota de cartão de crédito
+    function showCreditCardNote(serviceType) {
+      const noteElement = document.getElementById(`creditCardNote${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}`);
+      const paymentInput = document.querySelector(`input[name="pagamento-${serviceType}"]:checked`);
+      
+      if (noteElement) {
+        if (paymentInput && paymentInput.value === 'Cartão de Crédito') {
+          noteElement.classList.remove('hidden');
+        } else {
+          noteElement.classList.add('hidden');
+        }
+      }
+    }
+
+    // LÓGICA DE ORÇAMENTO CENTRAL
+    function updateBudget(serviceType) {
+      let basePrice = 0;
+      let summaryDetails = {};
+      let feeRate = 0;
+      let selectedPayment;
+      let serviceDate;
+      let termsAccepted;
+
+      // Função auxiliar para processar as opções de rádio (com data-price)
+      const processOption = (name, summaryKey, service) => {
+          const input = document.querySelector(`input[name="${name}"]:checked`);
+          if (input) {
+              const price = parseFloat(input.getAttribute('data-price')) || 0;
+              basePrice += price;
+              summaryDetails[summaryKey] = input.value;
+          } else {
+              summaryDetails[summaryKey] = 'Não selecionado';
+          }
+      };
+
+
+      if (serviceType === 'faxina') {
+        feeRate = 0.15; // 15% de taxa de serviço
+        
+        const tamanhoType = document.querySelector('input[name="tamanho"]:checked');
+        const m2 = document.querySelector('input[name="m2"]:checked');
+        const extras = document.querySelectorAll('input[name="extras-faxina"]:checked');
+        
+        selectedPayment = document.querySelector('input[name="pagamento-faxina"]:checked')?.value || 'Não selecionado';
+        serviceDate = document.getElementById('serviceDateFaxina').value;
+        termsAccepted = document.getElementById('termsAcceptedFaxina').checked;
+
+        summaryDetails.tamanho = tamanhoType ? tamanhoType.value : 'Não selecionado';
+        summaryDetails.quartos = counters.faxina.quartos;
+        summaryDetails.banheiros = counters.faxina.banheiros;
+        summaryDetails.extras = [];
+
+        // 1. Cálculo do preço base (Tamanho)
+        if (tamanhoType) {
+          // O valor base é definido pelo m2, independentemente de ser Casa ou Apartamento
+          if (m2) {
+            basePrice += basePricesFaxina[m2.value] || 0;
+            summaryDetails.tamanho = `${tamanhoType.value} - ${m2.value}`;
+          }
+        }
+        
+        // 2. Cálculo de cômodos
+        const quartosExtra = counters.faxina.quartos - initialRooms.quartos;
+        const banheirosExtra = counters.faxina.banheiros - initialRooms.banheiros;
+        basePrice += (quartosExtra * roomPrices.quartos);
+        basePrice += (banheirosExtra * roomPrices.banheiros);
+
+        // 3. Cálculo de extras
+        extras.forEach(input => {
+          const price = parseFloat(input.value) || 0;
+          basePrice += price;
+          // Adiciona apenas se o extra não for 'Não desejo adicionar'
+          if (input.value !== '0') {
+            summaryDetails.extras.push(input.parentElement.querySelector('span').textContent);
+          }
+        });
+
+        // Render Summary
+        document.getElementById('summaryTamanhoFaxina').textContent = summaryDetails.tamanho;
+        document.getElementById('summaryQuartosFaxina').textContent = `${summaryDetails.quartos} ${summaryDetails.quartos > 1 ? 'quartos' : 'quarto'}`;
+        document.getElementById('summaryBanheirosFaxina').textContent = `${summaryDetails.banheiros} ${summaryDetails.banheiros > 1 ? 'banheiros' : 'banheiro'}`;
+        document.getElementById('summaryExtrasFaxina').textContent = summaryDetails.extras.length > 0 ? summaryDetails.extras.join(', ') : 'Nenhum extra selecionado';
+        document.getElementById('summaryDataFaxina').textContent = serviceDate ? new Date(serviceDate).toLocaleDateString('pt-BR') : '-';
+        document.getElementById('summaryPagamentoFaxina').textContent = selectedPayment;
+
+        // Calculate final value
+        const finalPrice = basePrice * (1 + feeRate);
+        const finalBudgetDisplay = document.getElementById('finalBudgetFaxina');
+        finalBudgetDisplay.textContent = 'R$ ' + finalPrice.toFixed(2).replace('.', ',');
+        
+        // Enable WhatsApp button
+        const whatsappBtnFaxina = document.getElementById('whatsappBtnFaxina');
+        const isFaxinaReady = tamanhoType && serviceDate && termsAccepted && finalPrice > 0 && selectedPayment !== 'Não selecionado';
+
+        if (isFaxinaReady) {
+          whatsappBtnFaxina.classList.remove('btn-disabled');
+          whatsappBtnFaxina.disabled = false;
+        } else {
+          whatsappBtnFaxina.classList.add('btn-disabled');
+          whatsappBtnFaxina.disabled = true;
+        }
+
+        whatsappBtnFaxina.onclick = () => sendWhatsappMessage(
+            'faxina',
+            summaryDetails.tamanho,
+            summaryDetails.quartos,
+            summaryDetails.banheiros,
+            summaryDetails.extras.join(', ') || 'Nenhum',
+            document.getElementById('serviceDateFaxina').value,
+            selectedPayment,
+            finalPrice.toFixed(2).replace('.', ',')
+        );
+
+      } else if (serviceType === 'terreno') {
+        feeRate = 0.13; // 13% de taxa de serviço
+        
+        selectedPayment = document.querySelector('input[name="pagamento-terreno"]:checked')?.value || 'Não selecionado';
+        serviceDate = document.getElementById('serviceDateTerreno').value;
+        termsAccepted = document.getElementById('termsAcceptedTerreno').checked;
+
+        // Processar todas as categorias de Terreno
+        processOption('tamanhoTerreno', 'Tamanho', 'terreno');
+        processOption('densidadeMato', 'Densidade', 'terreno');
+        processOption('lixoEntulho', 'Lixo/Entulho', 'terreno');
+        processOption('inclinacao', 'Inclinação', 'terreno');
+        processOption('retiradaMato', 'Retirada do Mato', 'terreno');
+        
+        // Render Summary
+        document.getElementById('summaryTamanhoTerreno').textContent = summaryDetails.Tamanho;
+        document.getElementById('summaryDensidadeTerreno').textContent = summaryDetails.Densidade;
+        document.getElementById('summaryLixoTerreno').textContent = summaryDetails['Lixo/Entulho'];
+        document.getElementById('summaryInclinacaoTerreno').textContent = summaryDetails.Inclinação;
+        document.getElementById('summaryRetiradaMatoTerreno').textContent = summaryDetails['Retirada do Mato'];
+        document.getElementById('summaryDataTerreno').textContent = serviceDate ? new Date(serviceDate).toLocaleDateString('pt-BR') : '-';
+        document.getElementById('summaryPagamentoTerreno').textContent = selectedPayment;
+
+
+        // Calculate final value
+        const finalPrice = basePrice * (1 + feeRate);
+        const finalBudgetDisplay = document.getElementById('finalBudgetTerreno');
+        finalBudgetDisplay.textContent = 'R$ ' + finalPrice.toFixed(2).replace('.', ',');
+
+        // Enable WhatsApp button
+        const whatsappBtnTerreno = document.getElementById('whatsappBtnTerreno');
+        const isTerrenoReady = basePrice > 0 && serviceDate && termsAccepted && selectedPayment !== 'Não selecionado';
+        
+        if (isTerrenoReady) {
+          whatsappBtnTerreno.classList.remove('btn-disabled');
+          whatsappBtnTerreno.disabled = false;
+        } else {
+          whatsappBtnTerreno.classList.add('btn-disabled');
+          whatsappBtnTerreno.disabled = true;
+        }
+        
+        // Update whatsapp link onclick function
+        whatsappBtnTerreno.onclick = () => sendWhatsappMessage(
+            'terreno',
+            summaryDetails.Tamanho,
+            summaryDetails.Densidade,
+            summaryDetails['Lixo/Entulho'],
+            summaryDetails.Inclinação,
+            summaryDetails['Retirada do Mato'],
+            document.getElementById('serviceDateTerreno').value,
+            selectedPayment,
+            finalPrice.toFixed(2).replace('.', ',')
+        );
+    } else if (serviceType === 'piscina') { // NOVO SERVIÇO DE PISCINA
+        feeRate = 0.15; // 15% de taxa de serviço
+        
+        selectedPayment = document.querySelector('input[name="pagamento-piscina"]:checked')?.value || 'Não selecionado';
+        serviceDate = document.getElementById('serviceDatePiscina').value;
+        termsAccepted = document.getElementById('termsAcceptedPiscina').checked;
+
+        // Processar todas as categorias de Piscina
+        processOption('tamanhoPiscina', 'Tamanho', 'piscina');
+        processOption('tipoLimpezaPiscina', 'Tipo de Limpeza', 'piscina');
+        processOption('estadoAguaPiscina', 'Estado da Água', 'piscina');
+        
+        // Render Summary
+        document.getElementById('summaryTamanhoPiscina').textContent = summaryDetails.Tamanho;
+        document.getElementById('summaryTipoLimpezaPiscina').textContent = summaryDetails['Tipo de Limpeza'];
+        document.getElementById('summaryEstadoAguaPiscina').textContent = summaryDetails['Estado da Água'];
+        document.getElementById('summaryDataPiscina').textContent = serviceDate ? new Date(serviceDate).toLocaleDateString('pt-BR') : '-';
+        document.getElementById('summaryPagamentoPiscina').textContent = selectedPayment;
+
+        // Calculate final value
+        const finalPrice = basePrice * (1 + feeRate);
+        const finalBudgetDisplay = document.getElementById('finalBudgetPiscina');
+        finalBudgetDisplay.textContent = 'R$ ' + finalPrice.toFixed(2).replace('.', ',');
+
+        // Enable WhatsApp button
+        const whatsappBtnPiscina = document.getElementById('whatsappBtnPiscina');
+        const isPiscinaReady = basePrice > 0 && serviceDate && termsAccepted && selectedPayment !== 'Não selecionado';
+        
+        if (isPiscinaReady) {
+          whatsappBtnPiscina.classList.remove('btn-disabled');
+          whatsappBtnPiscina.disabled = false;
+        } else {
+          whatsappBtnPiscina.classList.add('btn-disabled');
+          whatsappBtnPiscina.disabled = true;
+        }
+        
+        // Update whatsapp link onclick function
+        whatsappBtnPiscina.onclick = () => sendWhatsappMessage(
+            'piscina',
+            summaryDetails.Tamanho,
+            summaryDetails['Tipo de Limpeza'],
+            summaryDetails['Estado da Água'],
+            document.getElementById('serviceDatePiscina').value,
+            selectedPayment,
+            finalPrice.toFixed(2).replace('.', ',')
+        );
+    }
+  }
+
+
+    function sendWhatsappMessage(serviceType, ...details) {
+      let message = "";
+      let data, pagamento, valor, termsConfirmation;
+
+      termsConfirmation = "☑️ Li e concordo com os Termos de Uso e Política de Funcionamento da Quintal Limpo.";
+
+      if (serviceType === 'faxina') {
+        const [tamanho, quartos, banheiros, extras, rawDate, rawPagamento, rawValor] = details;
+        data = rawDate ? new Date(rawDate).toLocaleDateString('pt-BR') : 'Não informada';
+        pagamento = rawPagamento;
+        valor = rawValor;
+
+        message = `Olá! Gostaria de agendar um serviço de Faxina Residencial:\n\nDetalhes do Serviço:\n🏡 Tamanho: ${tamanho}\n🛌 Quartos: ${quartos}\n🛁 Banheiros: ${banheiros}\n✨ Extras: ${extras}\n\n🗓️ Data: ${data}\n💳 Pagamento: ${pagamento}\n💰 Valor do Serviço: R$ ${valor}\n\n${termsConfirmation}\n\nPor favor, confirme a disponibilidade!`;
+      } else if (serviceType === 'terreno') {
+        const [tamanho, densidade, lixo, inclinacao, retirada, rawDate, rawPagamento, rawValor] = details;
+        data = rawDate ? new Date(rawDate).toLocaleDateString('pt-BR') : 'Não informada';
+        pagamento = rawPagamento;
+        valor = rawValor;
+
+        message = `Olá! Gostaria de agendar um serviço de Limpeza de Terreno:\n\nDetalhes do Serviço:\n📏 Tamanho: ${tamanho}\n🌿 Densidade: ${densidade}\n🗑️ Lixo/Entulho: ${lixo}\n⛰️ Inclinação: ${inclinacao}\n🚚 Retirada do Mato: ${retirada}\n\n🗓️ Data: ${data}\n💳 Pagamento: ${pagamento}\n💰 Valor do Serviço: R$ ${valor}\n\n${termsConfirmation}\n\nPor favor, confirme a disponibilidade!`;
+      } else if (serviceType === 'piscina') { // NOVO
+        const [tamanho, tipoLimpeza, estadoAgua, rawDate, rawPagamento, rawValor] = details;
+        data = rawDate ? new Date(rawDate).toLocaleDateString('pt-BR') : 'Não informada';
+        pagamento = rawPagamento;
+        valor = rawValor;
+
+        message = `Olá! Gostaria de agendar um serviço de Limpeza de Piscina:\n\nDetalhes do Serviço:\n🏊 Tamanho: ${tamanho}\n🧼 Tipo de Limpeza: ${tipoLimpeza}\n💧 Estado da Água: ${estadoAgua}\n\n🗓️ Data: ${data}\n💳 Pagamento: ${pagamento}\n💰 Valor do Serviço: R$ ${valor}\n\n${termsConfirmation}\n\nPor favor, confirme a disponibilidade!`;
+      }
+      
+      const encodedMessage = encodeURIComponent(message);
+      
+      // Tracking de conversão final
+      gtag('event', 'conversion', {
+        event_category: 'Conversao_Final',
+        event_label: `Confirmar_WhatsApp_${serviceType}`,
+        value: parseFloat(valor)
+      });
+      fbq('track', 'Lead', {value: parseFloat(valor), currency: 'BRL', content_name: `Confirmar WhatsApp ${serviceType}`});
+      
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      // Esconde todos os elementos de orçamento ao carregar
+      document.getElementById('orcamento-title').classList.add('hidden');
+      document.getElementById('click-instruction').classList.add('hidden');
+      document.getElementById('orcamento-faxina-content').classList.add('hidden');
+      document.getElementById('orcamento-terreno-content').classList.add('hidden');
+      document.getElementById('orcamento-piscina-content').classList.add('hidden'); // NOVO
+      document.getElementById('btn-descricao-faxina').classList.add('hidden');
+      document.getElementById('btn-descricao-terreno').classList.add('hidden');
+      document.getElementById('btn-descricao-piscina').classList.add('hidden'); // NOVO
+      document.getElementById('m2-selection-container').classList.add('hidden');
+
+      // Inicializa os contadores para 2 quartos e 1 banheiro
+      updateCounter('quartos', 0, 'faxina');
+      updateCounter('banheiros', 0, 'faxina');
+      
+      // Sistema de Notificações Rotativas
+      const notifications = [
+        '5 orçamentos solicitados hoje!',
+        'Ana agendou uma Faxina Residencial!',
+        'Orçamento solicitado no bairro BTN 2!',
+        'Emanuel agendou uma Limpeza de Terreno!',
+        'Orçamento solicitado no bairro Vila Nobre!',
+        'Hárina agendou uma Limpeza de Piscina!',
+        'Aproveite os benefícios do Clube Quintal!',
+        'Paula agendou uma Faxina Residencial!',
+        '8 orçamentos solicitados hoje!',
+        'Alysson agendou uma Limpeza de Terreno!',
+        'Aproveite os benefícios do Clube Quintal!',
+        'Rita agendou uma Limpeza de Piscina!',
+        'Orçamento solicitado no bairro Jardim Bahia!'
+      ];
+      
+      let currentNotificationIndex = 0;
+      
+      function showNotification() {
+        const notificationFloat = document.getElementById('notification-float');
+        const notificationMessage = document.getElementById('notification-message');
+        
+        if (notificationFloat && notificationMessage) {
+          notificationMessage.textContent = notifications[currentNotificationIndex];
+          notificationFloat.classList.remove('hidden');
+          
+          // Esconder após 5 segundos
+          setTimeout(() => {
+            notificationFloat.classList.add('hidden');
+          }, 5000);
+          
+          // Próxima notificação
+          currentNotificationIndex = (currentNotificationIndex + 1) % notifications.length;
+        }
+      }
+      
+      // Exibir primeira notificação após 3 segundos
+      setTimeout(showNotification, 3000);
+      
+      // Exibir notificação a cada 10 segundos
+      setInterval(showNotification, 10000);
+
+      // Aplica a lógica de preço inicial para todos (apenas para inicializar o R$ 0,00)
+      updateBudget('faxina'); 
+      updateBudget('terreno');
+      updateBudget('piscina'); // NOVO
+    });
+    
+    // JavaScript para Menu Mobile
+    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+      const mobileMenu = document.getElementById('mobile-menu');
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Fechar menu mobile ao clicar em um link
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.add('hidden');
+      });
+    });
+</script>
+
+<!-- ============================================ -->
+<!-- SEÇÃO FAQ -->
+<!-- ============================================ -->
+<section id="faq" class="py-16 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 text-center mb-12">Perguntas Frequentes</h2>
+    
+    <!-- CLIENTES -->
+    <div class="mb-10">
+      <h3 class="text-2xl font-bold text-green-600 mb-6">CLIENTES</h3>
+      
+      <!-- Pergunta 1 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Como solicito um orçamento e agendo um serviço?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">É simples!
+Clique no botão “Meu Orçamento” no serviço que você deseja.
+Depois, preencha na tela as informações de acordo com sua necessidade e realidade — tudo de forma rápida e intuitiva.
+
+Assim que concluir, o valor estimado aparecerá na tela.
+Se estiver de acordo, leia e aceite os termos e, em seguida, envie o resumo do seu orçamento pra nossa equipe.
+
+Pronto! Receberemos sua solicitação e confirmaremos o agendamento pelo WhatsApp. 💚</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 2 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Os profissionais são de confiança?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">Antes de ingressar na plataforma, cada profissional parceiro passa por um processo de verificação de antecedentes, análise de histórico profissional e orientação sobre conduta e valores da Quintal Limpo.
+
+Essas medidas são adotadas para promover segurança e qualidade nos atendimentos, mas é importante destacar que a plataforma não pode garantir comportamentos futuros nem se responsabilizar por atos individuais de terceiros.
+
+Em qualquer situação que envolva ocorrências ou irregularidades, a Quintal Limpo oferece suporte imediato e colabora integralmente com as autoridades competentes, fornecendo informações mediante solicitação legal formal. 🌿</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 3 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Quais serviços posso contratar?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">Faxina Residencial, Limpeza de Terreno e Limpeza de Piscina.</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 4 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Posso cancelar um serviço agendado?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">Pode sim! Se avisar com até 24 horas de antecedência, você recebe o valor de volta sem nenhum desconto. Se cancelar com menos de 24 horas, será cobrada uma taxa de 20% — esse valor é repassado à profissional pelo tempo reservado e deslocamento. Essa prática é justa e está dentro do Código de Defesa do Consumidor.</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 5 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">O pagamento é feito antes ou depois do serviço?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">O pagamento é realizado no momento do agendamento, antes da execução do serviço.
+
+A Quintal Limpo atua como plataforma de intermediação, conectando clientes a profissionais parceiros verificados.
+O pagamento antecipado garante a reserva do horário e a disponibilidade de um profissional verificado para o atendimento.
+
+Em caso de cancelamento, seguimos a política justa de reembolso e reagendamento descrita acima, sempre priorizando a transparência e o equilíbrio entre cliente e profissional. 🌿</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- PROFISSIONAIS -->
+    <div>
+      <h3 class="text-2xl font-bold text-green-600 mb-6">PROFISSIONAIS</h3>
+      
+      <!-- Pergunta 1 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Como faço para me tornar um profissional parceiro(a)?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">É só acessar a página inicial e clicar no botão "Ser um Profissional Parceiro(a)" no nosso site e preencher o formulário com seus dados. Nossa equipe vai entrar em contato para seguir com o cadastro.</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 2 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Preciso pagar alguma taxa para me cadastrar?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">Não! O cadastro é totalmente gratuito.</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 3 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Como recebo meus pagamentos?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700">Depois de concluir o serviço e enviar as fotos de antes e depois, seu pagamento é feito via Pix. Geralmente, o valor cai no mesmo dia. Em dias de alta demanda ou se o sistema estiver instável, pode levar até 2 dias úteis.</p>
+        </div>
+      </div>
+      
+      <!-- Pergunta 4 -->
+      <div class="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <button class="faq-toggle w-full text-left px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+          <span class="font-semibold text-gray-800 pr-4">Quais são os requisitos iniciais para ser um parceiro?</span>
+          <svg class="faq-icon w-6 h-6 text-green-600 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+          </svg>
+        </button>
+        <div class="faq-content hidden px-6 pb-4">
+          <p class="text-gray-700 mb-2">Você precisa:</p>
+          <ul class="list-disc list-inside ml-4 text-gray-700 space-y-1">
+            <li>Ser responsável e comprometido(a)</li>
+            <li>Ter experiência prática na área que quer atuar</li>
+            <li>Estar alinhado com os valores da Quintal Limpo</li>
+            <li>Em alguns casos, ter as ferramentas do trabalho (dependendo do serviço)</li>
+            <li>E voluntariamente apresentar o antecedente criminal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function toggleFAQ(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.faq-icon');
+    const isHidden = content.classList.contains('hidden');
+    
+    if (isHidden) {
+      content.classList.remove('hidden');
+      icon.style.transform = 'rotate(45deg)';
+    } else {
+      content.classList.add('hidden');
+      icon.style.transform = 'rotate(0deg)';
+    }
+  }
+</script>
+
+<!-- ============================================ -->
+<!-- RODAPÉ -->
+<!-- ============================================ -->
+<footer id="seja-parceiro" class="bg-gray-900 text-white py-12">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    
+    <!-- Grid de Informações -->
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      
+      <!-- Coluna 1: Sobre -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-green-400">Quintal Limpo</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Plataforma que conecta clientes a profissionais de limpeza verificados, oferecendo praticidade e impacto social.
+        </p>
+      </div>
+      
+      <!-- Coluna 2: Links Rápidos -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-green-400">Links Rápidos</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#home" class="text-gray-400 hover:text-green-400 transition-colors">Home</a></li>
+          <li><a href="#servicos" class="text-gray-400 hover:text-green-400 transition-colors">Serviços</a></li>
+          <li><a href="#clube-quintal" class="text-gray-400 hover:text-green-400 transition-colors">Clube Quintal</a></li>
+          <li><a href="#sobre-nos" class="text-gray-400 hover:text-green-400 transition-colors">Sobre Nós</a></li>
+          <li><a href="#faq" class="text-gray-400 hover:text-green-400 transition-colors">FAQ</a></li>
+          <li><a href="#" onclick="openModal('modal-termos'); return false;" class="text-gray-400 hover:text-green-400 transition-colors">Termos de Uso</a></li>
+        </ul>
+      </div>
+      
+      <!-- Coluna 3: Contato -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-green-400">Contato</h3>
+        <ul class="space-y-2 text-sm text-gray-400">
+          <li>
+            <a href="mailto:seuquintallimpo@gmail.com" class="hover:text-green-400 transition-colors">
+              📧 seuquintallimpo@gmail.com
+            </a>
+          </li>
+          <li>📍 Paulo Afonso - BA</li>
+          <li>🏛️ CNPJ: 41.323.162/0001-48</li>
+        </ul>
+        
+        <!-- Botão Seja Parceiro -->
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1F5jLpscZDPlL_R3HCb0XG-5TBGh7aTK79fUr0RfgMJajbg/viewform" target="_blank" rel="noopener" class="inline-block mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold">
+          ✅ Seja um Parceiro
+        </a>
+      </div>
+    </div>
+    
+    <!-- Linha Separadora -->
+    <div class="border-t border-gray-700 pt-6">
+      <p class="text-center text-gray-500 text-sm">
+        © 2025 Quintal Limpo. Todos os direitos reservados.
+      </p>
+    </div>
+    
+  </div>
+</footer>
+
+<!-- ================================================== -->
+<!-- BOTTOM NAVIGATION - NAVEGAÇÃO INFERIOR MOBILE -->
+<!-- ================================================== -->
+<nav class="bottom-nav">
+  <a href="#home" class="bottom-nav-item touch-feedback" data-section="home">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+    </svg>
+    <span>Início</span>
+  </a>
+  
+  <a href="#servicos" class="bottom-nav-item touch-feedback" data-section="servicos">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+    </svg>
+    <span>Serviços</span>
+  </a>
+  
+  <a href="#clube-quintal" class="bottom-nav-item touch-feedback" data-section="clube-quintal" onclick="gtag('event', 'click', {event_category: 'Interesse_Fidelizacao', event_label: 'Clube_Quintal_Plus'}); fbq('track', 'ViewContent', {content_name: 'Clube Quintal+'});">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>Clube</span>
+  </a>
+  
+  <a href="#faq" class="bottom-nav-item touch-feedback" data-section="faq">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>FAQ</span>
+  </a>
+  
+  <a href="https://wa.me/5575991760518" target="_blank" class="bottom-nav-item touch-feedback" onclick="gtag('event', 'click', {event_category: 'Contato_Direto', event_label: 'Contato_Mobile_Bottom_Nav'}); fbq('track', 'Contact', {content_name: 'Contato Mobile'});">
+    <svg fill="currentColor" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+    <span>Contato</span>
+  </a>
+</nav>
+
+<script>
+  // Bottom Navigation - Highlight da seção ativa
+  document.addEventListener('DOMContentLoaded', function() {
+    const navItems = document.querySelectorAll('.bottom-nav-item[data-section]');
+    const sections = document.querySelectorAll('section[id]');
+    
+    function updateActiveNav() {
+      let currentSection = '';
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= sectionTop - 100) {
+          currentSection = section.getAttribute('id');
+        }
+      });
+      
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === currentSection) {
+          item.classList.add('active');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', updateActiveNav);
+    updateActiveNav();
+    
+    // Adicionar classe ripple a todos os botões
+    const buttons = document.querySelectorAll('button, a.inline-block, .service-card a');
+    buttons.forEach(btn => {
+      if (!btn.classList.contains('ripple')) {
+        btn.classList.add('ripple', 'touch-feedback');
+      }
+    });
+    
+    // Progress Bar - Indicador de Scroll
+    function updateProgressBar() {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight - windowHeight;
+      const scrolled = window.pageYOffset;
+      const progress = (scrolled / documentHeight) * 100;
+      
+      const progressBar = document.getElementById('progressBar');
+      if (progressBar) {
+        progressBar.style.width = progress + '%';
+      }
+    }
+    
+    window.addEventListener('scroll', updateProgressBar);
+    updateProgressBar();
+    
+    // Lazy Loading de Imagens com Intersection Observer
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+            }
+            observer.unobserve(img);
+          }
+        });
+      });
+      
+      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+    
+    // Smooth Scroll para Links Internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href !== '#' && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const offsetTop = target.offsetTop - 70; // Ajuste para header fixo
+            window.scrollTo({
+              top: offsetTop,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+    
+    // Feedback Visual de Toque em Cards
+    document.querySelectorAll('.service-card').forEach(card => {
+      card.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.98)';
+      });
+      
+      card.addEventListener('touchend', function() {
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 150);
+      });
+    });
+    
+    // Carrossel de Depoimentos
+    let currentTestimonial = 0;
+    const testimonials = document.querySelectorAll('.testimonial-slide');
+    const testimonialDots = document.querySelectorAll('.testimonial-dot');
+    const testimonialsContainer = document.getElementById('testimonials-container');
+    
+    function changeTestimonial(index) {
+      currentTestimonial = index;
+      
+      // Atualizar posição do carrossel
+      if (testimonialsContainer) {
+        testimonialsContainer.style.transform = `translateX(-${currentTestimonial * 100}%)`;
+      }
+      
+      // Atualizar indicadores
+      testimonialDots.forEach((dot, i) => {
+        if (i === currentTestimonial) {
+          dot.classList.remove('bg-gray-300');
+          dot.classList.add('bg-green-600');
+        } else {
+          dot.classList.remove('bg-green-600');
+          dot.classList.add('bg-gray-300');
+        }
+      });
+    }
+    
+    // Avançar automaticamente a cada 5 segundos
+    setInterval(() => {
+      currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+      changeTestimonial(currentTestimonial);
+    }, 5000);
+    
+    // Tornar função global para os botões
+    window.changeTestimonial = changeTestimonial;
+  });
+  
+  // Rastreamento de Scroll Completo até o fim da página
+  let scrolledToBottom = false;
+  window.addEventListener('scroll', function() {
+    if (!scrolledToBottom) {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Verifica se o usuário rolou até 90% da página (considera como "fim")
+      if (scrollTop + windowHeight >= documentHeight * 0.9) {
+        scrolledToBottom = true;
+        gtag('event', 'scroll', {
+          event_category: 'Engajamento',
+          event_label: 'Scroll_Completo_Pagina'
+        });
+        fbq('track', 'ViewContent', {content_name: 'Scroll Completo'});
+      }
+    }
+  });
+  
+  // Rastreamento de Tempo de Permanência até Envio de Orçamento
+  let pageLoadTime = Date.now();
+  let budgetSent = false;
+  
+  // Interceptar o envio de orçamento para calcular o tempo
+  const originalSendWhatsappMessage = window.sendWhatsappMessage;
+  window.sendWhatsappMessage = function(...args) {
+    if (!budgetSent) {
+      budgetSent = true;
+      const timeSpent = Math.round((Date.now() - pageLoadTime) / 1000); // em segundos
+      gtag('event', 'timing_complete', {
+        event_category: 'Engajamento',
+        event_label: 'Tempo_Ate_Orcamento',
+        value: timeSpent
+      });
+      fbq('track', 'CustomizeProduct', {value: timeSpent, content_name: 'Tempo até Orçamento'});
+    }
+    return originalSendWhatsappMessage.apply(this, args);
+  };
+</script>
+
+</body>
+</html>
